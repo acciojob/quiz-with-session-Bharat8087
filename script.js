@@ -54,12 +54,12 @@
     }
     renderQuestions();
 
-    function saveProgress() {
-const options = document.querySelectorAll('input[type="radio"]:checked');
-      options.forEach((option, index) => {
-        sessionStorage.setItem(`progress${index}`, option.value);
-      });
-    }
+   function saveProgress() {
+  const options = document.querySelectorAll('input[type="radio"]:checked');
+  options.forEach((option, index) => {
+    sessionStorage.setItem(`progress${index}`, option.value);
+  });
+}
 
     submitButton.addEventListener('click', () => {
       saveProgress();
