@@ -1,7 +1,3 @@
-//your JS code here.
-
-// Do not change code below this line
-// This code will just display the questions to the screen
  const questions = [
       {
         question: "What is the capital of France?",
@@ -59,7 +55,7 @@
     renderQuestions();
 
     function saveProgress() {
-      const options = document.querySelectorAll('input[type="radio"]:[checked="true"]');
+      const options = document.querySelectorAll(`input[type="radio"][name^="question-"]:checked`);
       options.forEach((option, index) => {
         sessionStorage.setItem(`progress${index}`, option.value);
       });
