@@ -1,76 +1,91 @@
- const questions = [
-      {
-        question: "What is the capital of France?",
-        choices: ["Paris", "London", "Berlin", "Madrid"],
-        answer: "Paris",
-      },
-      {
-        question: "What is the highest mountain in the world?",
-        choices: ["Everest", "Kilimanjaro", "Denali", "Matterhorn"],
-        answer: "Everest",
-      },
-      {
-        question: "What is the largest country by area?",
-        choices: ["Russia", "China", "Canada", "United States"],
-        answer: "Russia",
-      },
-      {
-        question: "Which is the largest planet in our solar system?",
-        choices: ["Earth", "Jupiter", "Mars"],
-        answer: "Jupiter",
-      },
-      {
-        question: "What is the capital of Canada?",
-        choices: ["Toronto", "Montreal", "Vancouver", "Ottawa"],
-        answer: "Ottawa",
-      },
-    ];
+const questions = [
+  {
+    question: "What is the capital of France?",
+    choices: ["Paris", "London", "Berlin", "Madrid"],
+    answer: "Paris",
+  },
+  {
+    question: "What is the highest mountain in the world?",
+    choices: ["Everest", "Kilimanjaro", "Denali", "Matterhorn"],
+    answer: "Everest",
+  },
+  {
+    question: "What is the largest country by area?",
+    choices: ["Russia", "China", "Canada", "United States"],
+    answer: "Russia",
+  },
+  {
+    question: "Which is the largest planet in our solar system?",
+    choices: ["Earth", "Jupiter", "Mars"],
+    answer: "Jupiter",
+  },
+  {
+    question: "What is the capital of Canada?",
+    choices: ["Toronto", "Montreal", "Vancouver", "Ottawa"],
+    answer: "Ottawa",
+  },
+];
 
-    const questionsElement = document.getElementById('questions');
-    const submitButton = document.getElementById('submit');
-    const scoreDisplay = document.getElementById('score');
+const questionsContainer = document.getElementById('questions');
+const submitButton = document.getElementById('submit');
+const scoreDisplay = document.getElementById('score');
 
-    function renderQuestions() {
-      for (let i = 0; i < questions.length; i++) {
-        const question = questions[i];
-        const questionElement = document.createElement("div");
-        const questionText = document.createTextNode(question.question);
-        questionElement.appendChild(questionText);
-        for (let j = 0; j < question.choices.length; j++) {
-          const choice = question.choices[j];
-          const choiceElement = document.createElement("input");
-          choiceElement.setAttribute("type", "radio");
-          choiceElement.setAttribute("name", `question-${i}`);
-          choiceElement.setAttribute("value", choice);
-          if (sessionStorage.getItem(`progress${i}`) === choice) {
-            choiceElement.checked = true;
-          }
-          const choiceText = document.createTextNode(choice);
-          questionElement.appendChild(choiceElement);
-          questionElement.appendChild(choiceText);
-        }
-        questionsElement.appendChild(questionElement);
-      }
+function renderQuestion(question, index) {
+  const questionElement = document.createElement("div");
+  const questionText = document.createTextNode(question.question);
+  questionElement.appendChild(questionText);
+  
+  question.choices.forEach((choice, choiceIndex) => {
+    const choiceElement = document.createElement("input");
+    choiceElement.setAttribute("type", "radio");
+    choiceElement.setAttribute("name", `question-${index}`);
+    choiceElement.setAttribute("value", choice);
+    
+    if (sessionStorage.getItem(`progress${index}`) === choice) {
+      choiceElement.checked = true;
     }
-    renderQuestions();
+    
+    const choiceText = document.createTextNode(choice);
+    questionElement.appendChild(choiceElement);
+    questionElement.appendChild(choiceText);
+  });
+  
+  questionsContainer.appendChild(questionElement);
+}
+
+function renderQuestions() {
+  questions.forEach((question, index) => {
+    renderQuestion(question, index);
+  });
+}
+
 function saveProgress() {
   const options = document.querySelectorAll('input[type="radio"]:checked');
-  if(options.length > 0) {
-    options.forEach((option, index) => {
-      const questionIndex = option.name.split('-')[1]; // get the question index from the name attribute
-      sessionStorage.setItem(`progress${questionIndex}`, option.value);
-    });
-  }
+  options.forEach((option, index) => {
+    const questionIndex = option.name.split('-')[1];
+    sessionStorage.setItem(`progress${questionIndex}`, option.value);
+  });
+}
 
+function calculateScore() {
+  let score = 0;
+  questions.forEach((question, index) => {
+    if (sessionStorage.getItem(`progress${index}`) === question.answer) {
+      score++;
+    }
+  });
+  return score;
+}
 
-    submitButton.addEventListener('click', () => {
-      saveProgress();
-      let score = 0;
-      for (let i = 0; i < questions.length; i++) {
-        if (sessionStorage.getItem(`progress${i}`) === questions[i].answer) {
-          score++;
-        }
-      }
-      scoreDisplay.textContent = `Your score is ${score} out of ${questions.length}`;
-      localStorage.setItem('score', score);
-    });
+function displayScore(score) {
+  scoreDisplay.textContent = `Your score is ${score} out of ${questions.length}`;
+}
+
+submitButton.addEventListener('click', () => {
+  saveProgress();
+  const score = calculateScore();
+  displayScore(score);
+  localStorage.setItem('score', score);
+});
+
+renderQuestions();
