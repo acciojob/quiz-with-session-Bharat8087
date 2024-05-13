@@ -53,13 +53,15 @@
       }
     }
     renderQuestions();
-
-   function saveProgress() {
+function saveProgress() {
   const options = document.querySelectorAll('input[type="radio"]:checked');
-  options.forEach((option, index) => {
-    sessionStorage.setItem(`progress${index}`, option.value);
-  });
-}
+  if(options.length > 0) {
+    options.forEach((option, index) => {
+      const questionIndex = option.name.split('-')[1]; // get the question index from the name attribute
+      sessionStorage.setItem(`progress${questionIndex}`, option.value);
+    });
+  }
+
 
     submitButton.addEventListener('click', () => {
       saveProgress();
