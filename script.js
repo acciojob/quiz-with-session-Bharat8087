@@ -55,7 +55,7 @@
     renderQuestions();
 
     function saveProgress() {
-      const options = document.querySelectorAll(`input[type="radio"][name^="question-"]:checked`);
+const options = document.querySelectorAll('input[type="radio"]:checked');
       options.forEach((option, index) => {
         sessionStorage.setItem(`progress${index}`, option.value);
       });
