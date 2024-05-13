@@ -1,4 +1,4 @@
- const questions = [
+const questions = [
       {
         question: "What is the capital of France?",
         choices: ["Paris", "London", "Berlin", "Madrid"],
@@ -45,6 +45,10 @@
           choiceElement.checked = true;
         }
 
+        choiceElement.addEventListener('change', () => {
+          sessionStorage.setItem(`progress${index}`, choice);
+        });
+
         const choiceText = document.createTextNode(choice);
         questionElement.appendChild(choiceElement);
         questionElement.appendChild(choiceText);
@@ -61,14 +65,6 @@
 
     renderQuestions();
 
-    function saveProgress() {
-      const options = document.querySelectorAll('input[type="radio"]:checked');
-      options.forEach((option, index) => {
-        const questionIndex = option.name.split('-')[1];
-        sessionStorage.setItem(`progress${questionIndex}`, option.value);
-      });
-    }
-
     function calculateScore() {
       let score = 0;
       questions.forEach((question, index) => {
@@ -79,21 +75,29 @@
       return score;
     }
 
-    function displayScore(score) {
-      scoreDisplay.textContent = `Your score is ${score} out of ${questions.length}`;
+    function displayScore() {
+      const storedScore = localStorage.getItem('score');
+      if (storedScore !== null) {
+        scoreDisplay.textContent = `Your score is ${storedScore} out of ${questions.length}`;
+      }
     }
 
-    submitButton.addEventListener('click', () => {
-      const allOptions = document.querySelectorAll('input[type="radio"]');
-      const checkedOptions = document.querySelectorAll('input[type="radio"]:checked');
+    displayScore();
 
-      if (allOptions.length !== checkedOptions.length) {
+    submitButton.addEventListener('click', () => {
+      let allQuestionsAnswered = true;
+      questions.forEach((question, index) => {
+        if (sessionStorage.getItem(`progress${index}`) === null) {
+          allQuestionsAnswered = false;
+        }
+      });
+
+      if (!allQuestionsAnswered) {
         alert('Please answer all the questions before submitting the quiz.');
         return;
       }
 
-      saveProgress();
       const score = calculateScore();
-      displayScore(score);
+      scoreDisplay.textContent = `Your score is ${score} out of ${questions.length}`;
       localStorage.setItem('score', score);
     });
