@@ -42,7 +42,7 @@
         choiceElement.setAttribute("value", choice);
 
         if (sessionStorage.getItem(`progress${index}`) === choice) {
-          choiceElement.checked = true;
+          choiceElement.setAttribute("checked", "");
         }
 
         choiceElement.addEventListener('change', () => {
