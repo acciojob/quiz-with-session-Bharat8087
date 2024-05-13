@@ -47,7 +47,7 @@
           choiceElement.setAttribute("name", `question-${i}`);
           choiceElement.setAttribute("value", choice);
           if (sessionStorage.getItem(`progress${i}`) === choice) {
-            choiceElement.setAttribute("checked", true);
+            choiceElement.checked = true;
           }
           const choiceText = document.createTextNode(choice);
           questionElement.appendChild(choiceElement);
