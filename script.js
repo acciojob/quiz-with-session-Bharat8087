@@ -1,3 +1,4 @@
+// Define your questions here
 const questions = [
   {
     question: "What is the capital of France?",
@@ -26,54 +27,39 @@ const questions = [
   }
 ];
 
-const quizForm = document.getElementById('quizForm');
-const questionsList = document.getElementById('questionsList');
-const scoreDisplay = document.getElementById('score');
+// Function to display questions
+function displayQuestions() {
+  const questionsList = document.getElementById('questionsList');
+  questionsList.innerHTML = '';
+  questions.forEach((q, index) => {
+    const questionItem = document.createElement('li');
+    questionItem.innerHTML = `
+      <h3>${q.question}</h3>
+      <div>
+        ${q.options.map((opt, i) => `
+          <input type="radio" id="q${index}option${i}" name="question${index}" value="${opt}">
+          <label for="q${index}option${i}">${opt}</label>
+        `).join('')}
+      </div>
+    `;
+    questionsList.appendChild(questionItem);
+  });
+}
 
-document.addEventListener('DOMContentLoaded', () => {
-  const savedProgress = sessionStorage.getItem('progress');
-  if (savedProgress) {
-    const progress = JSON.parse(savedProgress);
-    progress.forEach((answer, index) => {
-      const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
-      if (input) {
-        input.checked = true;
-      }
-    });
-  }
-});
-
-questions.forEach((q, index) => {
-  const questionItem = document.createElement('li');
-  questionItem.innerHTML = `
-    <h3>${q.question}</h3>
-    <div>
-      ${q.options.map((opt, i) => `
-        <input type="radio" id="q${index}option${i}" name="question${index}" value="${opt}">
-        <label for="q${index}option${i}">${opt}</label>
-      `).join('')}
-    </div>
-  `;
-  questionsList.appendChild(questionItem);
-});
-
-quizForm.addEventListener('change', () => {
-  const answers = Array.from(quizForm.elements).reduce((acc, element) => {
-    if (element.type === 'radio' && element.checked) {
-      const questionIndex = parseInt(element.name.replace('question', ''));
-      acc[questionIndex] = element.value;
-    }
+// Function to save progress
+function saveProgress() {
+  const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+    const questionIndex = parseInt(input.name.replace('question', ''));
+    acc[questionIndex] = input.value;
     return acc;
   }, {});
   sessionStorage.setItem('progress', JSON.stringify(Object.values(answers)));
-});
+}
 
-quizForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  const userAnswers = Array.from(quizForm.elements).reduce((acc, element) => {
-    if (element.type === 'radio' && element.checked) {
-      acc[element.name] = element.value;
-    }
+// Function to calculate score
+function calculateScore() {
+  const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+    acc[input.name] = input.value;
     return acc;
   }, {});
 
@@ -85,7 +71,32 @@ quizForm.addEventListener('submit', (e) => {
     }
   });
 
-  scoreDisplay.textContent = `Your score is ${score} out of 5.`;
-
+  document.getElementById('score').textContent = `Your score is ${score} out of 5.`;
   localStorage.setItem('score', score);
+}
+
+// Event listener for form submission
+document.getElementById('quizForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  calculateScore();
+});
+
+// Event listener for radio button change
+document.getElementById('quizForm').addEventListener('change', saveProgress);
+
+// Call function to display questions
+displayQuestions();
+
+// Load progress if any
+window.addEventListener('DOMContentLoaded', () => {
+  const savedProgress = sessionStorage.getItem('progress');
+  if (savedProgress) {
+    const progress = JSON.parse(savedProgress);
+    progress.forEach((answer, index) => {
+      const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
+      if (input) {
+        input.checked = true;
+      }
+    });
+  }
 });
