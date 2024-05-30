@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Define your questions here
   const questions = [
     {
       question: "What is the capital of France?",
@@ -28,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
-  // Function to display questions
   function displayQuestions() {
     const questionsList = document.getElementById('questionsList');
     questionsList.innerHTML = '';
@@ -47,48 +45,19 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Function to save progress
-  function saveProgress() {
-    const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
-      const questionIndex = parseInt(input.name.replace('question', ''));
-      acc[questionIndex] = input.value;
-      return acc;
-    }, {});
-    sessionStorage.setItem('progress', JSON.stringify(answers));
-  }
-
-  // Function to calculate score
-  function calculateScore() {
-    const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
-      acc[input.name] = input.value;
-      return acc;
-    }, {});
-
-    let score = 0;
-    questions.forEach((q, index) => {
-      const userAnswer = userAnswers[`question${index}`];
-      if (userAnswer === q.correctAnswer) {
-        score++;
-      }
-    });
-
-    document.getElementById('score').textContent = `Your score is ${score} out of 5.`;
-    localStorage.setItem('score', score);
-  }
-
-  // Event listener for form submission
-  document.getElementById('quizForm').addEventListener('submit', function(event) {
-    event.preventDefault();
-    calculateScore();
-  });
-
-  // Event listener for radio button change
-  document.getElementById('quizForm').addEventListener('change', saveProgress);
-
-  // Call function to display questions
   displayQuestions();
+});
+function saveProgress() {
+  const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+    const questionIndex = parseInt(input.name.replace('question', ''));
+    acc[questionIndex] = input.value;
+    return acc;
+  }, {});
+  sessionStorage.setItem('progress', JSON.stringify(answers));
+}
 
-  // Load progress if any
+document.getElementById('quizForm').addEventListener('change', saveProgress);
+document.addEventListener('DOMContentLoaded', () => {
   const savedProgress = sessionStorage.getItem('progress');
   if (savedProgress) {
     const progress = JSON.parse(savedProgress);
@@ -100,4 +69,26 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
+});
+function calculateScore() {
+  const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+    acc[input.name] = input.value;
+    return acc;
+  }, {});
+
+  let score = 0;
+  questions.forEach((q, index) => {
+    const userAnswer = userAnswers[`question${index}`];
+    if (userAnswer === q.correctAnswer) {
+      score++;
+    }
+  });
+
+  document.getElementById('score').textContent = `Your score is ${score} out of ${questions.length}.`;
+  localStorage.setItem('score', score);
+}
+
+document.getElementById('quizForm').addEventListener('submit', function(event) {
+  event.preventDefault();
+  calculateScore();
 });
