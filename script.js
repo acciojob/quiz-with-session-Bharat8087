@@ -76,15 +76,19 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem('score', score);
   }
 
+  // Event listener for form submission
   document.getElementById('quizForm').addEventListener('submit', function(event) {
     event.preventDefault();
     calculateScore();
   });
 
+  // Event listener for radio button change
   document.getElementById('quizForm').addEventListener('change', saveProgress);
 
+  // Call function to display questions
   displayQuestions();
 
+  // Load progress if any
   const savedProgress = sessionStorage.getItem('progress');
   if (savedProgress) {
     const progress = JSON.parse(savedProgress);
