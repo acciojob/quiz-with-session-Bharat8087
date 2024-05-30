@@ -45,50 +45,55 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  displayQuestions();
-});
-function saveProgress() {
-  const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
-    const questionIndex = parseInt(input.name.replace('question', ''));
-    acc[questionIndex] = input.value;
-    return acc;
-  }, {});
-  sessionStorage.setItem('progress', JSON.stringify(answers));
-}
+  function saveProgress() {
+    const answers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+      const questionIndex = parseInt(input.name.replace('question', ''));
+      acc[questionIndex] = input.value;
+      return acc;
+    }, {});
+    sessionStorage.setItem('progress', JSON.stringify(answers));
+  }
 
-document.getElementById('quizForm').addEventListener('change', saveProgress);
-document.addEventListener('DOMContentLoaded', () => {
-  const savedProgress = sessionStorage.getItem('progress');
-  if (savedProgress) {
-    const progress = JSON.parse(savedProgress);
-    for (let index in progress) {
-      const answer = progress[index];
-      const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
-      if (input) {
-        input.checked = true;
+  function loadProgress() {
+    const savedProgress = sessionStorage.getItem('progress');
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      for (let index in progress) {
+        const answer = progress[index];
+        const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
+        if (input) {
+          input.checked = true;
+        }
       }
     }
   }
-});
-function calculateScore() {
-  const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
-    acc[input.name] = input.value;
-    return acc;
-  }, {});
 
-  let score = 0;
-  questions.forEach((q, index) => {
-    const userAnswer = userAnswers[`question${index}`];
-    if (userAnswer === q.correctAnswer) {
-      score++;
-    }
+  function calculateScore() {
+    const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
+      acc[input.name] = input.value;
+      return acc;
+    }, {});
+
+    let score = 0;
+    questions.forEach((q, index) => {
+      const userAnswer = userAnswers[`question${index}`];
+      if (userAnswer === q.correctAnswer) {
+        score++;
+      }
+    });
+
+    document.getElementById('score').textContent = `Your score is ${score} out of ${questions.length}.`;
+    localStorage.setItem('score', score);
+  }
+
+  document.getElementById('quizForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    calculateScore();
   });
 
-  document.getElementById('score').textContent = `Your score is ${score} out of ${questions.length}.`;
-  localStorage.setItem('score', score);
-}
+  document.getElementById('quizForm').addEventListener('change', saveProgress);
 
-document.getElementById('quizForm').addEventListener('submit', function(event) {
-  event.preventDefault();
-  calculateScore();
+  // Display questions and load progress on page load
+  displayQuestions();
+  loadProgress();
 });
