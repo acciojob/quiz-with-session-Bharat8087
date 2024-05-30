@@ -108,3 +108,4 @@ document.getElementById("quizForm").addEventListener("submit", function(event) {
   document.getElementById('score').textContent = `Your score is ${score} out of ${questions.length}.`;
   localStorage.setItem('score', score);
 });
+
