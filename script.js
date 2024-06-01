@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderQuestions() {
     const questionsList = document.getElementById('questionsList');
     console.log("Number of questions:", questions.length);
-    console.log("Number of list items:", questionsList.children.length);
+    console.log("Number of list items before rendering:", questionsList.children.length);
 
     questions.forEach((q, index) => {
       const questionItem = document.createElement('li');
@@ -48,6 +48,8 @@ document.addEventListener("DOMContentLoaded", function() {
       `;
       questionsList.appendChild(questionItem);
     });
+
+    console.log("Number of list items after rendering:", questionsList.children.length);
   }
 
   function loadSavedAnswers() {
@@ -99,3 +101,4 @@ document.addEventListener("DOMContentLoaded", function() {
     localStorage.setItem('score', score);
   });
 });
+
