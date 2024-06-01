@@ -32,6 +32,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function renderQuestions() {
     const questionsList = document.getElementById('questionsList');
+    console.log("Number of questions:", questions.length);
+    console.log("Number of list items:", questionsList.children.length);
 
     questions.forEach((q, index) => {
       const questionItem = document.createElement('li');
@@ -46,8 +48,22 @@ document.addEventListener("DOMContentLoaded", function() {
       `;
       questionsList.appendChild(questionItem);
     });
+  }
 
-    console.log("Questions rendered:", questionsList); // Log rendered questions
+  function loadSavedAnswers() {
+    const savedProgress = sessionStorage.getItem('progress');
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress);
+      console.log("Saved answers:", progress);
+      for (let index in progress) {
+        const answer = progress[index];
+        const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
+        console.log("Input found:", input);
+        if (input) {
+          input.checked = true;
+        }
+      }
+    }
   }
 
   function saveAnswer(questionIndex, selectedOption) {
@@ -56,28 +72,13 @@ document.addEventListener("DOMContentLoaded", function() {
     sessionStorage.setItem('progress', JSON.stringify(answers));
   }
 
-  function loadSavedAnswers() {
-    const savedProgress = sessionStorage.getItem('progress');
-    if (savedProgress) {
-      const progress = JSON.parse(savedProgress);
-      for (let index in progress) {
-        const answer = progress[index];
-        const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
-        console.log("Input created:", input); // Log created input
-        if (input) {
-          input.checked = true;
-        }
-      }
-    }
-  }
-
   function calculateScore() {
     const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
       acc[input.name] = input.value;
       return acc;
     }, {});
 
-    console.log("User answers:", userAnswers); // Log user answers
+    console.log("User answers:", userAnswers);
 
     let score = 0;
     questions.forEach((q, index) => {
