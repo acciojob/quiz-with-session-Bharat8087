@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function renderQuestions() {
     const questionsList = document.getElementById('questionsList');
-    questionsList.innerHTML = '';
 
     questions.forEach((q, index) => {
       const questionItem = document.createElement('li');
