@@ -47,12 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
       questionsList.appendChild(questionItem);
     });
 
-    document.querySelectorAll('input[type="radio"]').forEach(input => {
-      input.addEventListener('change', function() {
-        const questionIndex = parseInt(this.name.replace('question', ''));
-        saveAnswer(questionIndex, this.value);
-      });
-    });
+    console.log("Questions rendered:", questionsList); // Log rendered questions
   }
 
   function saveAnswer(questionIndex, selectedOption) {
@@ -68,6 +63,7 @@ document.addEventListener("DOMContentLoaded", function() {
       for (let index in progress) {
         const answer = progress[index];
         const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
+        console.log("Input created:", input); // Log created input
         if (input) {
           input.checked = true;
         }
@@ -80,6 +76,8 @@ document.addEventListener("DOMContentLoaded", function() {
       acc[input.name] = input.value;
       return acc;
     }, {});
+
+    console.log("User answers:", userAnswers); // Log user answers
 
     let score = 0;
     questions.forEach((q, index) => {
