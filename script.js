@@ -27,11 +27,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   ];
 
-  // On page load
   renderQuestions();
   loadSavedAnswers();
 
-  // Function to render questions
   function renderQuestions() {
     const questionsList = document.getElementById('questionsList');
     questionsList.innerHTML = '';
@@ -50,7 +48,6 @@ document.addEventListener("DOMContentLoaded", function() {
       questionsList.appendChild(questionItem);
     });
 
-    // Add event listeners to radio buttons
     document.querySelectorAll('input[type="radio"]').forEach(input => {
       input.addEventListener('change', function() {
         const questionIndex = parseInt(this.name.replace('question', ''));
@@ -59,14 +56,12 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 
-  // Function to save answer
   function saveAnswer(questionIndex, selectedOption) {
     const answers = JSON.parse(sessionStorage.getItem('progress')) || {};
     answers[questionIndex] = selectedOption;
     sessionStorage.setItem('progress', JSON.stringify(answers));
   }
 
-  // Function to load saved answers
   function loadSavedAnswers() {
     const savedProgress = sessionStorage.getItem('progress');
     if (savedProgress) {
@@ -81,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   }
 
-  // Function to calculate score
   function calculateScore() {
     const userAnswers = Array.from(document.querySelectorAll('input[type="radio"]:checked')).reduce((acc, input) => {
       acc[input.name] = input.value;
@@ -99,8 +93,7 @@ document.addEventListener("DOMContentLoaded", function() {
     return score;
   }
 
-  // Event listener for form submission
-  document.getElementById("quizForm").addEventListener("submit", function(event) {
+  document.getElementById("submitBtn").addEventListener("click", function(event) {
     event.preventDefault();
 
     const score = calculateScore();
