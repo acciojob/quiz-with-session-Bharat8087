@@ -47,6 +47,12 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
       `;
       questionsList.appendChild(questionItem);
+
+      q.options.forEach((opt, i) => {
+        document.getElementById(`q${index}option${i}`).addEventListener('change', function() {
+          saveAnswer(index, opt);
+        });
+      });
     });
 
     console.log("Number of list items after rendering:", questionsList.children.length);
