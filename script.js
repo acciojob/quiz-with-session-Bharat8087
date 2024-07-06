@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
   function renderQuestions() {
     const questionsList = document.getElementById('questionsList');
-console.log("Number of selected options:", document.querySelectorAll('input[type="radio"]:checked').length);
+    console.log("Number of selected options:", document.querySelectorAll('input[type="radio"]:checked').length);
     console.log("Number of list items before rendering:", questionsList.children.length);
 
     questions.forEach((q, index) => {
@@ -56,11 +56,11 @@ console.log("Number of selected options:", document.querySelectorAll('input[type
     const savedProgress = sessionStorage.getItem('progress');
     if (savedProgress) {
       const progress = JSON.parse(savedProgress);
-console.log("Saved options in sessionStorage:", sessionStorage.getItem('progress'));
+      console.log("Saved options in sessionStorage:", progress);
       for (let index in progress) {
         const answer = progress[index];
         const input = document.querySelector(`input[name="question${index}"][value="${answer}"]`);
-        console.log("Input found:", input);
+        console.log("Input found for question", index, ":", input);
         if (input) {
           input.checked = true;
         }
@@ -99,8 +99,6 @@ console.log("Saved options in sessionStorage:", sessionStorage.getItem('progress
     const score = calculateScore();
     document.getElementById('score').textContent = `Your score is ${score} out of ${questions.length}.`;
     localStorage.setItem('score', score);
-	  console.log("Saved score in localStorage:", localStorage.getItem('score'));
-
+    console.log("Saved score in localStorage:", localStorage.getItem('score'));
   });
 });
-
